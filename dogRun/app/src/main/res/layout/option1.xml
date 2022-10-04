@@ -18,16 +18,17 @@
         app:layout_constraintVertical_bias="0.839" />
 
     <ImageView
-        android:id="@+id/imageView7"
+        android:id="@+id/setup_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:onClick="phone_mode_click"
         android:scaleType="fitXY"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.0"
+        app:layout_constraintVertical_bias="1.0"
         app:srcCompat="@drawable/dogo3" />
 
     <VideoView
@@ -39,6 +40,30 @@
         app:layout_constraintHorizontal_bias="0.496"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.122" />
+        app:layout_constraintVertical_bias="0.144" />
+
+    <Button
+        android:id="@+id/update_image"
+        android:layout_width="191dp"
+        android:layout_height="51dp"
+        android:text="Update Image"
+        app:backgroundTint="@color/black"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.726" />
+
+    <Button
+        android:id="@+id/update_pin"
+        android:layout_width="191dp"
+        android:layout_height="51dp"
+        android:text="Update Pin"
+        app:backgroundTint="@color/black"
+        app:layout_constraintBottom_toTopOf="@+id/update_image"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.945" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
