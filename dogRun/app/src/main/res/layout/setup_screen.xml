@@ -5,14 +5,14 @@
     android:id="@+id/background"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".MainActivity">
+    tools:context=".setupPage">
 
 
     <Button
         android:id="@+id/pin_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:onClick="complete_click"
+        android:onClick="Complete"
         android:text="Complete"
         app:backgroundTint="@color/black"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -26,7 +26,6 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:background="@color/white"
-        android:onClick="complete_click"
         android:scaleType="fitXY"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -54,7 +53,7 @@
         android:id="@+id/select_file"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:onClick="submit"
+        android:onClick="Upload"
         android:text="UPLOAD"
         app:backgroundTint="@color/black"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -118,9 +117,10 @@
         app:layout_constraintVertical_bias="0.307" />
 
     <ImageView
-        android:id="@+id/upload"
+        android:id="@+id/user_photo"
         android:layout_width="244dp"
         android:layout_height="177dp"
+        android:onClick="Upload"
         app:layout_constraintBottom_toTopOf="@+id/pin_button"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.497"
