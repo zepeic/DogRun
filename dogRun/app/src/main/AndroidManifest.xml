@@ -40,10 +40,6 @@
                 android:value="" />
 
         </activity>
-        <activity
-            android:name=".mainPage"
-            android:exported="true" />
-
 
 
     </application>

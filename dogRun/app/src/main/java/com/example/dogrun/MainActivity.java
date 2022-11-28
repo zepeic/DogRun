@@ -10,6 +10,7 @@ import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.text.InputType;
@@ -27,18 +28,25 @@ import android.net.Uri;
 import android.widget.VideoView;
 
 
+import com.jcraft.jsch.ChannelExec;
+import com.jcraft.jsch.JSch;
+import com.jcraft.jsch.Session;
+
+import java.io.ByteArrayOutputStream;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
+import java.util.Properties;
 
 public class MainActivity extends AppCompatActivity {
     private EditText pin;
     private int correct_pin;
-    private Button phone_mode;
+    private Button treat;
     private Button update_pin;
     private Button update_image;
+    private Button shoot_ball;
     private static final int PICK_IMAGE = 1;
-    VideoView streamView;
-    MediaController mediaController;
+    private VideoView streamView;
+    private MediaController mediaController;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -46,7 +54,17 @@ public class MainActivity extends AppCompatActivity {
         SharedPreferences prefs = getSharedPreferences("prefs", MODE_PRIVATE);
         SharedPreferences stored_pin = getSharedPreferences("stored_pin", MODE_PRIVATE);
         boolean firstState = prefs.getBoolean("firstStart", true);
+        System.out.println("Where SSH will happen");
+//        new Thread(() -> {
+            try {
+                System.out.println("Where SSH will happen");
+                executeRemoteCommand("root", "myPW","192.168.0.26", 22);
 
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
+//        }).start();
 
 
 
@@ -66,6 +84,32 @@ public class MainActivity extends AppCompatActivity {
         }
 
     }
+    public static String executeRemoteCommand(String username,String password,String hostname,int port)
+            throws Exception {
+        JSch jsch = new JSch();
+        Session session = jsch.getSession(username, hostname, port);
+        session.setPassword(password);
+
+        // Avoid asking for key confirmation
+        Properties prop = new Properties();
+        prop.put("StrictHostKeyChecking", "no");
+        session.setConfig(prop);
+
+        session.connect();
+
+        // SSH Channel
+        ChannelExec channelssh = (ChannelExec)
+                session.openChannel("exec");
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        channelssh.setOutputStream(baos);
+
+        // Execute command
+        channelssh.setCommand("lsusb > /home/pi/test.txt");
+        channelssh.connect();
+        channelssh.disconnect();
+
+        return baos.toString();
+    }
 
 
     public void submit(View v) {
@@ -77,9 +121,10 @@ public class MainActivity extends AppCompatActivity {
 
                     Toast.LENGTH_LONG).show();
             setContentView(R.layout.option1);
-            phone_mode = (Button)findViewById(R.id.phoneMode);
+            treat = (Button)findViewById(R.id.treat);
             update_pin = (Button)findViewById(R.id.update_pin);
             update_image = (Button)findViewById(R.id.update_image);
+            shoot_ball = (Button)findViewById(R.id.shoot_ball);
             streamView = findViewById(R.id.videoView);
             Uri UriSrc = Uri.parse("http://192.168.1.79:8080/");
             streamView.setVideoURI(UriSrc);
@@ -87,7 +132,7 @@ public class MainActivity extends AppCompatActivity {
             streamView.start();
 
 
-            phone_mode.setOnClickListener( new View.OnClickListener(){
+            shoot_ball.setOnClickListener( new View.OnClickListener(){
                 public void onClick (View v){
                     shoot(v);
                 }
@@ -102,6 +147,11 @@ public class MainActivity extends AppCompatActivity {
                     change_image(v);
                 }
             });
+            treat.setOnClickListener( new View.OnClickListener(){
+                public void onClick (View v){
+                    dispense(v);
+                }
+            });
         } else {
             Toast.makeText(getApplicationContext(), "Incorrect Pin",
 
@@ -110,10 +160,18 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void shoot(View v) {
-
-        Toast.makeText(getApplicationContext(), "PewPew!",
+        Toast.makeText(getApplicationContext(), "Pew Pew",
 
                 Toast.LENGTH_LONG).show();
+
+    }
+    private void dispense(View v) {
+        Toast.makeText(getApplicationContext(), "Treat coming right up!",
+
+                Toast.LENGTH_LONG).show();
+
+
+
 
     }
     private void change_image(View v) {
