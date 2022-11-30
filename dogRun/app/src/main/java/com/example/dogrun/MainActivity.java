@@ -30,6 +30,7 @@ import android.widget.VideoView;
 
 import com.jcraft.jsch.ChannelExec;
 import com.jcraft.jsch.JSch;
+import com.jcraft.jsch.JSchException;
 import com.jcraft.jsch.Session;
 
 import java.io.ByteArrayOutputStream;
@@ -47,6 +48,7 @@ public class MainActivity extends AppCompatActivity {
     private static final int PICK_IMAGE = 1;
     private VideoView streamView;
     private MediaController mediaController;
+    private static Session session;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -55,16 +57,16 @@ public class MainActivity extends AppCompatActivity {
         SharedPreferences stored_pin = getSharedPreferences("stored_pin", MODE_PRIVATE);
         boolean firstState = prefs.getBoolean("firstStart", true);
         System.out.println("Where SSH will happen");
-//        new Thread(() -> {
+        new Thread(() -> {
             try {
                 System.out.println("Where SSH will happen");
-                executeRemoteCommand("root", "myPW","192.168.0.26", 22);
+                executeRemoteCommand("pi", "pi","192.168.1.79", 22);
 
             } catch (Exception e) {
                 e.printStackTrace();
             }
 
-//        }).start();
+        }).start();
 
 
 
@@ -86,10 +88,11 @@ public class MainActivity extends AppCompatActivity {
     }
     public static String executeRemoteCommand(String username,String password,String hostname,int port)
             throws Exception {
+        System.out.println("We are in the thread");
         JSch jsch = new JSch();
-        Session session = jsch.getSession(username, hostname, port);
+        session = jsch.getSession(username, hostname, port);
         session.setPassword(password);
-
+        System.out.println("we finished auth for pi");
         // Avoid asking for key confirmation
         Properties prop = new Properties();
         prop.put("StrictHostKeyChecking", "no");
@@ -104,7 +107,7 @@ public class MainActivity extends AppCompatActivity {
         channelssh.setOutputStream(baos);
 
         // Execute command
-        channelssh.setCommand("lsusb > /home/pi/test.txt");
+        channelssh.setCommand("bash /home/pi/Desktop/script.sh");
         channelssh.connect();
         channelssh.disconnect();
 
@@ -134,7 +137,11 @@ public class MainActivity extends AppCompatActivity {
 
             shoot_ball.setOnClickListener( new View.OnClickListener(){
                 public void onClick (View v){
-                    shoot(v);
+                    try {
+                        shoot(v);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
                 }
             });
             update_pin.setOnClickListener( new View.OnClickListener(){
@@ -159,16 +166,55 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    private void shoot(View v) {
+    private void shoot(View v) throws Exception {
         Toast.makeText(getApplicationContext(), "Pew Pew",
 
                 Toast.LENGTH_LONG).show();
+        new Thread(() -> {
+            try {
+                ChannelExec channelssh = (ChannelExec)
+                        session.openChannel("exec");
+                ByteArrayOutputStream baos = new ByteArrayOutputStream();
+                channelssh.setOutputStream(baos);
+
+                // Execute command
+
+                channelssh.setCommand("bash /home/pi/Desktop/shoot.sh");
+                channelssh.connect();
+                channelssh.disconnect();
+
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
+        }).start();
+
+
+
 
     }
     private void dispense(View v) {
         Toast.makeText(getApplicationContext(), "Treat coming right up!",
 
                 Toast.LENGTH_LONG).show();
+        new Thread(() -> {
+            try {
+                ChannelExec channelssh = (ChannelExec)
+                        session.openChannel("exec");
+                ByteArrayOutputStream baos = new ByteArrayOutputStream();
+                channelssh.setOutputStream(baos);
+
+                // Execute command
+
+                channelssh.setCommand("bash /home/pi/Desktop/treat.sh");
+                channelssh.connect();
+                channelssh.disconnect();
+
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
+        }).start();
 
 
 
@@ -197,6 +243,7 @@ public class MainActivity extends AppCompatActivity {
         builder.setTitle("Enter New Pin");
         AlertDialog dialog = builder.create();
         dialog.show();
+
     }
 
     @Override
@@ -222,11 +269,11 @@ public class MainActivity extends AppCompatActivity {
 
         }
     }
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        streamView.stopPlayback();
-    }
+//    @Override
+//    protected void onDestroy() {
+//        super.onDestroy();
+//        streamView.stopPlayback();
+//    }
 
 
 

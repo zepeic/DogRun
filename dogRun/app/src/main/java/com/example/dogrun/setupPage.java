@@ -49,7 +49,7 @@ public class setupPage extends AppCompatActivity {
         }
 
 
-        System.out.println("We actually get here " + pin_input_confirmation + " " + pin_input);
+        //System.out.println("We actually get here " + pin_input_confirmation + " " + pin_input);
         int int_pin = parseInt(pin_input);
         int int_pin_confirm = parseInt(pin_input_confirmation);
 
